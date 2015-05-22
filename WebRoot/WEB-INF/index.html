@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>微云</title>
+		
+		<link rel="stylesheet" href="js/bootstrap/css/bootstrap.min.css">
+		
+		<script src="js/jquery-1.11.1.js"></script>
+		<script src="js/vendor/jquery.ui.widget.js"></script>
+		<script src="js/jquery.iframe-transport.js"></script>
+		<script src="js/jquery.fileupload.js"></script>
+		<script src="js/bootstrap/js/bootstrap.min.js"></script>
+		
+		<style type="text/css">
+		
+			.pre-scrollable {
+			  max-height: 340px;
+			  overflow-y: scroll;
+			}
+			
+			.pro {
+				height:10px;
+			 	width:	10%;
+			 	background-color:#3CF;
+			 }
+		
+			.container-fluid{
+				background-color: #2c3e50;
+			}
+		
+			.container{
+				background-color: #2c3e50;
+			}
+		
+			.navbar{
+				margin-top: 2px;
+			}
+		
+		 	.panel-heading:HOVER {
+		 		cursor: pointer; 
+		 	}
+			
+			a:hover {
+				text-decoration: none;
+			} /* 鼠标移动到链接上时的状态 */
+		 
+			.fileInputContainer{
+		        height:256px;
+		        background:url(upfile.png);
+		        position:relative;
+		        width: 256px;
+	    	}
+   
+		    .fileInput{
+		        height:256px;
+		        overflow: hidden;
+		        font-size: 300px;
+		        position:absolute;
+		        right:0;
+		        top:0;
+		        opacity: 0;
+		        filter:alpha(opacity=0);
+		        cursor:pointer;
+	    	}
+	    	
+	    	.theme {
+	    		background-color: red;
+	    		height: 5px;
+	    		width: 5px;
+	    	}
+	    	
+		</style>
+		
+	</head>
+	
+	<body>
+	 
+		<div class="container">
+  			
+  			<!-- 导航栏 -->
+			<nav class="navbar navbar-inverse" role="navigation">	 			
+                <div class="navbar-header">	
+	 				<span class="navbar-brand glyphicon glyphicon-cloud">微云</span>
+			    </div>                
+                <div id="nav-right" class="navbar-right">
+                	<form id="login-form" class="navbar-form" role="form">
+                    	 <input type="text" class="form-control input-sm" name="username" id="username" placeholder="请输入 用户名">
+                         <div class="input-group">
+                         	<input type="password" class="form-control input-sm" name="password" id="password" placeholder="请输入 密码">
+                         	<span class="input-group-btn">
+                            	<button id="login" title="" data-placement="bottom" class="btn btn-default btn-sm" type="button">登陆</button>
+                            </span>
+                          </div>   
+                           <a data-toggle="modal" data-target="#regist-modal" class="btn btn-default btn-sm">注册</a> 
+                           <input id="uptag" type="hidden" value="">     
+                    </form>                   
+                </div>
+			</nav>
+			
+			<!-- 上传 -->
+			<div class="col-md-4">								
+                <div id="zone" class="fileInputContainer" title="拖文件到这里也能上传">
+                    <input class="fileInput"  type="file" onClick="false" name="file" enctype="multipart/form-data" id="fileupload" />
+                </div>
+            </div>
+			
+			<!-- 上传列表 上传多个文件时进度条有 bug -->
+            <div class="col-md-8">
+                <div class="panel panel-info">
+                	<div class="panel-heading">
+                 		<a data-toggle="collapse" data-parent="#accordion"  href="#yunzhong">
+                    		<h4 class="panel-title"><b>上传列表</b></h4>
+                    	</a> 
+                  	</div>
+           			<div id="yunzhong" class="panel-collapse collapse in">	
+                        <div id="yzc" class="panel-body">	
+                        	<!-- 这里添加进度条 -->
+                        </div>
+               		</div>
+                </div>
+			</div>
+			
+			<!-- 网盘里的内容，当上传完成加载到云盘时 该文件的加载 链接不可用 -->
+            <div class="col-md-12">
+                <div class="panel panel-info">
+                	<div class="panel-heading">
+                  		<a data-toggle="collapse" data-parent="#accordion" href="#yunpan">
+                    		<h4 class="panel-title"><b>云盘</b></h4>
+                   		</a>
+                  	</div>
+                  	<div class="panel-collapse collapse in">
+                    	<div id="yunpan" class="panel-body" style="overflow-y:auto; overflow-x:auto; width:auto; height:400px">
+                     		<table class="table table-hover">
+						   		<thead> <tr> <th>文件名</th><th>大小</th><th>修改时间</th><th>#</th> </tr> </thead>
+						   		<tbody>
+						    		<!-- 这里是云盘的内容 -->
+						   		</tbody>
+							</table>   
+                     	</div>
+                  	</div>
+                 </div>
+			</div> 
+			
+        </div> <!-- .container -->
+           
+       	<!-- 模态框（Modal） -->
+        <div class="modal fade" id="regist-modal" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
+           <div class="modal-dialog">
+              <div class="modal-content">
+                 <div id="modal-body" class="modal-body">             
+                    <form id="regist-form" class="navbar-form" idrole="form" method="post" >
+                    	 <input type="text" class="form-control input-sm" name="username" id="reg-username" placeholder="请输入 用户名">
+                         <input type="password" class="form-control input-sm" name="password" id="reg-password" placeholder="请输入 密码">
+                         <div class="input-group">  	
+                            <input type="password" class="form-control input-sm" name="rpassword" id="reg-rpassword" placeholder="请 确定密码">
+                         	<span class="input-group-btn">
+                            	<button id="regist"  title=""  class="btn btn-default btn-sm">注册</button>
+                            </span>
+                            <button type="button" class="close" 
+                               data-dismiss="modal" aria-hidden="true">&nbsp;&nbsp;<span class="glyphicon glyphicon-remove-circle"></span>
+                            </button>
+                          </div>   
+                    </form>                         
+                 </div>
+              </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+
+
+		<script>
+
+			var path = "http://localhost:8080/fileupload/";		// 请求 域名
+			//var path = "http://ylwqsy.ecs03.ectomcat.com/fileupload/";		// 请求 域名
+
+			$(function () {
+
+				// 阻止表单提交
+				$("#regist-form").submit(function(){
+					return false;
+				});
+				$("#login-form").submit(function(){
+					return false;
+				});
+
+				// 注册
+				$("#regist").click(function(){		
+
+					// 效验 字段合法性
+					if($("#reg-username").val()=="") {
+						$(this).tooltip("destroy");
+						$(this).attr("title","用户名不能为空").tooltip("show");
+						return ;
+						
+					} else if($("#reg-password").val()=="") {
+						$(this).tooltip("destroy");
+						$(this).attr("title","密码不能为空").tooltip("show");
+						return ;
+						
+					} else if($("#reg-rpassword").val()!=$("#reg-password").val()) {
+						$(this).tooltip("destroy");
+						$(this).attr("title","两次密码不相等").tooltip("show");
+						return ;
+						
+					} else {		// 字段验证通过
+						$(this).tooltip("destroy");		
+
+						$.post(path + "logReg!regist", {		// 异步提交 注册请求
+							username: $("#reg-username").val(),
+							password:  $("#reg-password").val(),
+							rpassword:	$("#reg-rpassword").val()
+							
+							}, function(data){		// 请求到服务器返回的数据
+								if(data=='true') {
+									alert("恭喜您，注册成功，请登录");
+									$('#regist-modal').modal('hide');
+									$("#username").focus();
+								} else {
+									alert(data);
+								}	
+					   		});	
+						}
+					});		// end #regist
+
+					// 登录请求
+					$("#login").click(function(){						
+						if($("#username").val()=="") {
+							$(this).tooltip("destroy");
+							$(this).attr("title","用户名不能为空").tooltip("show");
+							return ;
+						} else if($("#password").val()=="") {
+							$(this).tooltip("destroy");
+							$(this).attr("title","密码不能为空").tooltip("show");
+							return ;
+						} else {
+
+							// 异步提交 登录请求
+							$.post(path + "logReg!login", $("#login-form").serialize(), function(data){		// serialize 序列化 表单
+
+								if(data!='false') {		// 登录成功							 
+									$("#login-form").hide();
+									$("#nav-right").append("<p class='navbar-text'><span class='glyphicon glyphicon-user'></span>  "+$("#username").val()+" <a href='"+ path +"logReg!logout'>  退出</a></p>");
+
+									// 判断 返回的 文件数据（Json格式） 是否为空
+									if(data!="") {
+										var files = jQuery.parseJSON(data);		// 不为空 Json字符串 转为 Json
+										$.each(files, function(i, f){
+											// 读取文件 添加到微盘中
+											$("#yunpan tbody").append("<tr> <td>"+f.name+"</td> <td>"+f.size+"</td>  <td>"+f.time+"</td> <td><a target='_blank' class='glyphicon glyphicon-cloud-download' href='"+path+f.url+"'></a></td> </tr>");	 
+										});
+									}
+									
+								} else {
+									alert("用户名或者密码不对请检查后再登录");
+								}	
+						   });		// end post
+						}		// end else
+					});		// end login
+
+					// 上传实现
+					$('#fileupload').fileupload({
+
+						url: path + "upload",
+
+						add: function (e, data) {	// 添加上传文件时执行
+							$.each(data.files, function(i, f){
+								$.get(path + "logReg!checkLogin", function(result){		// 检查该用户是否登录 没有这取消上传
+									if(result=="true") {
+										data.submit();	// 上传 提交
+										// 添加进度条
+										$("#yzc").prepend('<div class="progress-bar progress-bar-info progress-bar-striped"><div class="progress-bar" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"><b>'+  f.name +'</b>  -----  <span>0<span>%</div></div>');
+									} else {
+										alert(result);		// 没有登录
+										$("#username").focus();
+									}
+							   	});   // end get
+							});		// end each
+						},
+
+						progress: function(e, data){	// 进度条改变  有bug 出现在多文件同时上传时
+							$.each( data.files, function(i, f){
+								var ps = parseInt(data.loaded / data.total * 100, 10);
+								$("#yzc .progress-bar:first").attr("style","width: "+ ps +"%;").text(f.name +"  -----  "+ ps + "%");	// 改变进度条
+							});
+						},
+						
+						done: function (e, data) {		// 上传完成 添加到 云盘中有 bug 下载链接不可用 文件大小 B为单位
+							$.each( data.files, function(i, f){
+								var myDate = new Date();
+								$("#yunpan tbody").prepend("<tr class='success'> <td>"+f.name+"</td> <td>"+f.size+" B</td>  <td>"+myDate.toLocaleString()+"</td> <td><a class='glyphicon glyphicon-cloud-download' href='javascrit:void(0)'></a></td> </tr>");							
+							});
+					    }  
+					    
+					});		// end fileupload
+				   
+				 	 
+				});		// end 
+
+		
+		</script>
+ 
+	</body> 
+</html>
